@@ -1,6 +1,8 @@
 package com.example.backend;
 
-public class Filme {
+import java.io.Serializable;
+
+public class Filme implements Serializable{
 
     private int id;
     private String titulo;
