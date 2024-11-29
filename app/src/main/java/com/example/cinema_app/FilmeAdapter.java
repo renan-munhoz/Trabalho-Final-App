@@ -42,7 +42,6 @@ public class FilmeAdapter extends BaseAdapter {
         }
 
         TextView textView = convertView.findViewById(android.R.id.text1);
-        textView.setText(filmes.get(position).getTitulo());
 
         return convertView;
     }

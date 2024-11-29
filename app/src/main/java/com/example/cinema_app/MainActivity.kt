@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
     fun openDetalhesFragment(filme: Filme) {
         val detalhesFragment = DetalhesFragment()
         val bundle = Bundle()
-        bundle.putSerializable("filme", filme)
         detalhesFragment.arguments = bundle
         replaceFragment(detalhesFragment)
     }
@@ -57,11 +56,7 @@ class MainActivity : AppCompatActivity() {
                 replaceFragment(ListagemFragment())
                 return true
             }
-            R.id.menu_detalhes -> {
-                // Pode ser necessário passar um filme específico ao abrir Detalhes
-                replaceFragment(DetalhesFragment())
-                return true
-            }
+            
             else -> return super.onOptionsItemSelected(item)
         }
     }

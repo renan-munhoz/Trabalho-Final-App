@@ -14,14 +14,4 @@
         android:title="Lista"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/menu_detalhes"
-        android:title="Detalhes"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
 </menu>
