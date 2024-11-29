@@ -6,26 +6,28 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/textTitulo"
-        android:layout_width="match_parent"
+        android:id="@+id/textViewTitulo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Título" />
+        android:textSize="24sp"
+        android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/textAno"
-        android:layout_width="match_parent"
+        android:id="@+id/textViewAno"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ano de Estreia" />
+        android:layout_marginTop="8dp"/>
 
     <TextView
-        android:id="@+id/textDiretor"
-        android:layout_width="match_parent"
+        android:id="@+id/textViewDiretor"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Diretor" />
+        android:layout_marginTop="8dp"/>
 
     <TextView
-        android:id="@+id/textGenero"
-        android:layout_width="match_parent"
+        android:id="@+id/textViewGenero"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gênero" />
+        android:layout_marginTop="8dp"/>
+
 </LinearLayout>

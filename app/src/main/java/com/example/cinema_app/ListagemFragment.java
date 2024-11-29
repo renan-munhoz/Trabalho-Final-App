@@ -1,76 +1,97 @@
 package com.example.cinema_app;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
+
+import com.example.backend.ApiService;
 import com.example.backend.Filme;
+import com.example.backend.ResponseFilme;
 import com.example.backend.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListagemFragment extends Fragment {
 
     private ListView listViewFilmes;
+    private ApiService apiService;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Infla o layout do fragmento
         View view = inflater.inflate(R.layout.fragment_listagem, container, false);
-
-        // Inicializa o ListView
         listViewFilmes = view.findViewById(R.id.listViewFilmes);
 
-        // Carregar a lista de filmes da API
-        carregarFilmes();
+        apiService = RetrofitClient.getApiService();
 
+        carregarFilmes();
         return view;
     }
 
     private void carregarFilmes() {
-        // Faz a chamada à API usando Retrofit
-        Call<List<Filme>> call = RetrofitClient.createService().getAllFilmes(); // Verifique o nome do método na interface
+        Call<List<Filme>> call = apiService.getData();
         call.enqueue(new Callback<List<Filme>>() {
             @Override
             public void onResponse(Call<List<Filme>> call, Response<List<Filme>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Configura o adaptador com a lista de filmes recebida
-                    FilmeAdapter adapter = new FilmeAdapter(getContext(), response.body());
-                    listViewFilmes.setAdapter(adapter);
-
-                    // Configura o evento de clique no ListView
-                    listViewFilmes.setOnItemClickListener((parent, view, position, id) -> {
-                        Filme filmeSelecionado = (Filme) parent.getItemAtPosition(position);
-                        exibirDetalhes(filmeSelecionado);
-                    });
+                    List<Filme> filmes = response.body();
+                    exibirFilmes(filmes);
                 } else {
-                    Toast.makeText(getContext(), "Erro ao carregar filmes", Toast.LENGTH_SHORT).show();
+                    mostrarErro("Erro ao carregar filmes: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Filme>> call, Throwable t) {
-                Toast.makeText(getContext(), "Erro de conexão: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                mostrarErro("Falha na conexão: " + t.getMessage());
             }
         });
     }
 
+
+
+    private void exibirFilmes(List<Filme> filmes) {
+        for (Filme filme : filmes) {
+            Log.d("ListagemFragment", "ID: " + filme.getId() + ", Título: " +
+                    (filme.getData() != null ? filme.getData().getTitulo() : "null"));
+        }
+        ArrayAdapter<Filme> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, filmes);
+        listViewFilmes.setAdapter(adapter);
+
+        listViewFilmes.setOnItemClickListener((parent, view, position, id) -> {
+            Filme filmeClicado = filmes.get(position);
+            exibirDetalhes(filmeClicado);
+        });
+    }
+
+
+    private void mostrarErro(String mensagem) {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(), mensagem, Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+
     private void exibirDetalhes(Filme filme) {
-        // Cria uma nova instância do DetalhesFragment
         DetalhesFragment detalhesFragment = new DetalhesFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("filme", filme);  // Passa o objeto Filme para o fragmento de detalhes
+        bundle.putSerializable("filme", filme);
         detalhesFragment.setArguments(bundle);
 
-        // Navega para o DetalhesFragment
         getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, detalhesFragment)  // Certifique-se de que o container está correto
+                .replace(R.id.fragment_container, detalhesFragment)
                 .addToBackStack(null)
                 .commit();
     }
+
 }
